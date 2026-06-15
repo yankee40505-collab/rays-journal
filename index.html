@@ -1,678 +1,960 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>RAY 的升級手札</title>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,900;1,300;1,600&family=Zen+Kaku+Gothic+New:wght@300;400;500&family=Italianno&display=swap" rel="stylesheet"/>
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#FBF8F3;
-  --bg-card:#FFFDF9;
-  --bg-warm:#F5EFE6;
-  --border:#E8DDD0;
-  --border-soft:#F0E8DC;
-  --text:#2E2318;
-  --text-mid:#6B5540;
-  --text-light:#A8917C;
-  --coffee:#9B6644;
-  --blush:#D4897A;
-  --sage:#7A9B84;
-  --gold:#C8A96A;
-  --gold-pale:#F0E4C8;
-  --red:#C85A5A;
-}
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:'Zen Kaku Gothic New',sans-serif;font-size:15px;line-height:1.8;min-height:100vh}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RAY 的升級手札</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,900;1,300;1,600&family=Zen+Kaku+Gothic+New:wght@300;400;500&family=DM+Mono:ital,wght@0,300;1,300&family=Italianno&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ── NAV ── */
-.topnav{background:var(--bg-card);border-bottom:1px solid var(--border-soft);padding:0 32px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
-.nav-brand{font-family:'Fraunces',serif;font-size:17px;font-weight:600;color:var(--coffee);letter-spacing:0.02em}
-.nav-brand span{font-family:'Italianno',cursive;font-size:22px;margin-right:6px;color:var(--gold)}
-.nav-links{display:flex;gap:6px}
-.nav-links a{padding:6px 14px;border-radius:20px;font-size:13px;color:var(--text-mid);text-decoration:none;transition:all .2s}
-.nav-links a:hover,.nav-links a.active{background:var(--gold-pale);color:var(--coffee)}
+    :root {
+      --bg:          #FBF8F3;
+      --bg-white:    #FFFFFF;
+      --bg-warm:     #F5EFE6;
+      --bg-card:     #FFFDF9;
+      --border:      #E8DDD0;
+      --border-soft: #F0E8DC;
+      --text:        #2E2318;
+      --text-mid:    #6B5540;
+      --text-light:  #A8917C;
+      --coffee:      #9B6644;
+      --blush:       #D4897A;
+      --sage:        #7A9B84;
+      --gold:        #C8A96A;
+      --gold-pale:   #F0E4C8;
+    }
 
-/* ── HERO ── */
-.hero{text-align:center;padding:52px 24px 40px;position:relative;overflow:hidden}
-.hero-deco{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;opacity:.35}
-.hero-title{font-family:'Fraunces',serif;font-size:clamp(2rem,5vw,3.2rem);font-weight:900;color:var(--coffee);line-height:1.15;margin-bottom:10px}
-.hero-title em{font-style:italic;color:var(--blush)}
-.hero-sub{font-size:14px;color:var(--text-light);letter-spacing:0.08em}
-.hero-divider{width:60px;height:1.5px;background:var(--gold);margin:18px auto 0;border-radius:2px}
+    html { scroll-behavior: smooth; }
 
-/* ── LAYOUT ── */
-.container{max-width:900px;margin:0 auto;padding:0 24px 60px}
-.section-header{display:flex;align-items:center;gap:12px;margin:36px 0 18px}
-.section-icon{width:32px;height:32px;background:var(--gold-pale);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.section-label{font-family:'Fraunces',serif;font-size:1.15rem;font-weight:600;color:var(--coffee)}
-.section-line{flex:1;height:1px;background:var(--border-soft)}
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-size: 15px;
+      line-height: 1.8;
+    }
 
-/* ── CARD BASE ── */
-.card{background:var(--bg-card);border:1px solid var(--border-soft);border-radius:16px;padding:20px 22px;position:relative;overflow:hidden}
-.card::before,.card::after{content:'';position:absolute;width:8px;height:8px;background:var(--gold);border-radius:50%;opacity:.55}
-.card::before{top:10px;left:10px}
-.card::after{bottom:10px;right:10px}
+    /* ─── DECORATIVE SVG PATTERNS ─── */
 
-/* ── TRACKER ── */
-.day-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
-.day-title{font-family:'Fraunces',serif;font-size:1.25rem;font-weight:600;color:var(--coffee)}
-.day-date{font-size:12px;color:var(--text-light);margin-top:2px}
-.day-btn-wrap{display:flex;gap:6px}
-.day-btn{background:none;border:1px solid var(--border);border-radius:10px;padding:5px 12px;cursor:pointer;font-size:12px;color:var(--text-mid);font-family:inherit;transition:all .18s}
-.day-btn:hover{background:var(--gold-pale);border-color:var(--gold)}
+    /* tiny hand-drawn star */
+    .deco-star {
+      display: inline-block;
+      width: 18px; height: 18px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2 L13.5 9 L20 9 L14.5 13 L16.5 20 L12 16 L7.5 20 L9.5 13 L4 9 L10.5 9 Z' fill='none' stroke='%23C8A96A' stroke-width='1.2' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-size: contain;
+      opacity: 0.7;
+      vertical-align: middle;
+    }
 
-.week-strip{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:16px}
-.wd{border:1px solid var(--border-soft);border-radius:10px;padding:7px 3px;text-align:center;cursor:pointer;background:var(--bg-card);transition:all .18s}
-.wd:hover{border-color:var(--gold)}
-.wd.today{border-color:var(--sage);background:#EDF3EE}
-.wd.cur{border-color:var(--gold);background:var(--gold-pale)}
-.wd-lbl{font-size:10px;color:var(--text-light);margin-bottom:3px}
-.wd-val{font-size:13px;font-weight:500;color:var(--text-mid)}
-.wd.today .wd-lbl,.wd.today .wd-val{color:#3D7550}
+    .deco-leaf {
+      display: inline-block;
+      width: 16px; height: 16px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 3 C12 3 20 7 20 14 C20 18 16.5 21 12 21 C7.5 21 4 18 4 14 C4 7 12 3 12 3Z' fill='none' stroke='%237A9B84' stroke-width='1.3'/%3E%3Cline x1='12' y1='21' x2='12' y2='10' stroke='%237A9B84' stroke-width='1' stroke-dasharray='2 2'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-size: contain;
+      vertical-align: middle;
+      opacity: 0.75;
+    }
 
-.streak-bar{display:flex;align-items:center;gap:10px;background:var(--bg-warm);border-radius:10px;padding:9px 14px;margin-bottom:16px}
-.streak-n{font-family:'Fraunces',serif;font-size:1.4rem;font-weight:600;color:var(--sage)}
-.streak-txt{font-size:13px;color:var(--text-mid)}
+    .deco-flower {
+      display: inline-block;
+      width: 18px; height: 18px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='3' fill='none' stroke='%23D4897A' stroke-width='1.2'/%3E%3Cellipse cx='12' cy='6' rx='2.5' ry='3.5' fill='none' stroke='%23D4897A' stroke-width='1.1'/%3E%3Cellipse cx='12' cy='18' rx='2.5' ry='3.5' fill='none' stroke='%23D4897A' stroke-width='1.1'/%3E%3Cellipse cx='6' cy='12' rx='3.5' ry='2.5' fill='none' stroke='%23D4897A' stroke-width='1.1'/%3E%3Cellipse cx='18' cy='12' rx='3.5' ry='2.5' fill='none' stroke='%23D4897A' stroke-width='1.1'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-size: contain;
+      vertical-align: middle;
+      opacity: 0.7;
+    }
 
-.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
-.stat-box{background:var(--bg-warm);border-radius:10px;padding:12px 14px}
-.stat-lbl{font-size:11px;color:var(--text-light);margin-bottom:5px;letter-spacing:.04em}
-.stat-val{font-size:1.2rem;font-weight:500;color:var(--text)}
-.stat-val span{font-size:11px;color:var(--text-light);margin-left:2px}
+    /* ─── TOP NAV ─── */
+    .topnav {
+      background: var(--bg-white);
+      border-bottom: 1px solid var(--border-soft);
+      padding: 0 52px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
 
-.sec-inner-title{font-size:12px;color:var(--text-light);letter-spacing:.06em;margin-bottom:10px;display:flex;align-items:center;gap:8px}
-.sec-inner-title::after{content:'';flex:1;height:1px;background:var(--border-soft)}
+    .topnav::after {
+      content: '';
+      position: absolute;
+      bottom: -3px; left: 0; right: 0;
+      height: 2px;
+      background: repeating-linear-gradient(
+        90deg,
+        var(--gold-pale) 0px, var(--gold-pale) 6px,
+        transparent 6px, transparent 10px
+      );
+    }
 
-/* sleep */
-.sleep-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;align-items:end}
-.field-lbl{font-size:12px;color:var(--text-light);margin-bottom:5px}
-.t-input{width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:var(--bg-card);color:var(--text);font-family:inherit}
-.t-input:focus{outline:none;border-color:var(--gold)}
-.sleep-badge{display:inline-flex;align-items:center;font-size:13px;font-weight:500;padding:5px 12px;border-radius:8px;margin-top:4px}
-.sb-good{background:#EDF5EE;color:#3D7550}
-.sb-ok{background:#FDF0E0;color:#9B6A2A}
-.sb-bad{background:#FBE8E8;color:var(--red)}
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
 
-/* workout */
-.w-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
-.w-btn{padding:11px 8px;border:1px solid var(--border);border-radius:10px;background:none;cursor:pointer;font-size:12px;color:var(--text-mid);text-align:center;transition:all .18s;font-family:inherit;line-height:1.4}
-.w-btn:hover{border-color:var(--sage);background:#F0F7F2}
-.w-btn.active{background:#EDF5EE;border-color:var(--sage);color:#3D7550;font-weight:500}
-.w-icon{font-size:19px;display:block;margin-bottom:4px}
-.note-inp{width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--bg-card);color:var(--text);resize:none;min-height:64px;font-family:inherit}
-.note-inp:focus{outline:none;border-color:var(--gold)}
+    .brand-icon {
+      width: 32px; height: 32px;
+      background: var(--gold-pale);
+      border-radius: 50%;
+      border: 1.5px solid var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
 
-/* habits */
-.habit-list{display:flex;flex-direction:column;gap:7px}
-.habit-item{display:flex;align-items:center;justify-content:space-between;padding:9px 13px;border:1px solid var(--border-soft);border-radius:10px;cursor:pointer;transition:all .18s}
-.habit-item:hover{border-color:var(--sage)}
-.habit-item.done{background:#EDF5EE;border-color:#B8DABD}
-.h-left{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--text)}
-.habit-item.done .h-left{color:#3D7550}
-.h-circle{width:19px;height:19px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px}
-.habit-item.done .h-circle{background:var(--sage);border-color:var(--sage);color:#fff}
+    .brand-text {
+      font-family: 'Fraunces', serif;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: 0.01em;
+    }
 
-/* water */
-.water-jugs{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.jug{font-size:26px;cursor:pointer;transition:transform .15s;opacity:.3;user-select:none}
-.jug.filled{opacity:1}
-.jug:hover{transform:scale(1.15)}
-.water-lbl{font-size:13px;color:var(--text-mid);margin-left:4px}
+    .brand-text em {
+      font-style: italic;
+      color: var(--coffee);
+    }
 
-/* mood */
-.mood-row{display:flex;gap:7px;flex-wrap:wrap}
-.mood-btn{padding:6px 14px;border:1px solid var(--border);border-radius:18px;background:none;cursor:pointer;font-size:13px;color:var(--text-mid);font-family:inherit;transition:all .18s}
-.mood-btn:hover{border-color:var(--blush)}
-.mood-btn.active{background:#FAF0ED;border-color:var(--blush);color:#8B3A3A;font-weight:500}
+    .brand-sub {
+      font-family: 'Italianno', cursive;
+      font-size: 14px;
+      color: var(--text-light);
+      margin-left: 4px;
+    }
 
-.save-btn{width:100%;padding:11px;background:var(--gold-pale);border:1px solid var(--gold);border-radius:12px;font-size:14px;font-weight:500;color:var(--coffee);cursor:pointer;font-family:inherit;transition:all .2s;margin-top:4px}
-.save-btn:hover{background:var(--gold);color:#fff}
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--coffee);color:#fff;border-radius:12px;padding:9px 20px;font-size:13px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999}
-.toast.show{opacity:1}
+    .topnav-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
 
-/* ── TODO & READLIST ── */
-.list-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-@media(max-width:580px){.list-grid{grid-template-columns:1fr}.stats-grid{grid-template-columns:1fr 1fr}}
+    .topnav-links a {
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--text-light);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
 
-.list-card{background:var(--bg-card);border:1px solid var(--border-soft);border-radius:16px;padding:18px 20px;position:relative;overflow:hidden}
-.list-card::before{content:'';position:absolute;top:10px;left:10px;width:7px;height:7px;background:var(--gold);border-radius:50%;opacity:.5}
+    .topnav-links a:hover { color: var(--coffee); }
 
-.list-title{font-family:'Fraunces',serif;font-size:1rem;font-weight:600;color:var(--coffee);margin-bottom:14px;display:flex;align-items:center;gap:7px}
-.list-title .ic{font-size:16px}
+    /* ─── HERO ─── */
+    .hero {
+      padding: 64px 52px 56px;
+      max-width: 1020px;
+      margin: 0 auto;
+      position: relative;
+    }
 
-.add-row{display:flex;gap:7px;margin-bottom:12px}
-.add-inp{flex:1;padding:7px 11px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--bg);color:var(--text);font-family:inherit}
-.add-inp:focus{outline:none;border-color:var(--gold)}
-.add-inp::placeholder{color:var(--text-light)}
-.add-btn{padding:7px 13px;background:var(--gold-pale);border:1px solid var(--gold);border-radius:8px;cursor:pointer;font-size:13px;color:var(--coffee);font-family:inherit;font-weight:500;white-space:nowrap;transition:all .18s}
-.add-btn:hover{background:var(--gold);color:#fff}
+    /* scattered deco elements behind hero */
+    .hero-deco {
+      position: absolute;
+      pointer-events: none;
+      user-select: none;
+    }
 
-.item-list{display:flex;flex-direction:column;gap:6px;max-height:320px;overflow-y:auto}
-.item-list::-webkit-scrollbar{width:4px}
-.item-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+    .hero-deco-1 {
+      top: 28px; right: 60px;
+      font-size: 56px;
+      opacity: 0.07;
+      font-family: 'Fraunces', serif;
+      color: var(--coffee);
+      transform: rotate(12deg);
+    }
 
-.list-item{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:8px;border:1px solid transparent;transition:all .18s;cursor:default}
-.list-item:hover{background:var(--bg-warm);border-color:var(--border-soft)}
-.list-item.done-item{opacity:.5}
-.list-item.done-item .item-text{text-decoration:line-through}
-.item-check{width:17px;height:17px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;font-size:10px;transition:all .18s}
-.list-item.done-item .item-check{background:var(--sage);border-color:var(--sage);color:#fff}
-.item-text{flex:1;font-size:13px;color:var(--text)}
-.item-meta{font-size:11px;color:var(--text-light)}
-.item-del{font-size:16px;color:var(--text-light);cursor:pointer;opacity:0;transition:opacity .15s;border:none;background:none;line-height:1;padding:0}
-.list-item:hover .item-del{opacity:1}
-.item-del:hover{color:var(--red)}
+    .hero::after {
+      content: '';
+      display: block;
+      margin-top: 40px;
+      height: 1px;
+      background: linear-gradient(90deg, var(--border) 0%, var(--gold) 50%, var(--border) 100%);
+    }
 
-/* read priority */
-.pri-select{font-size:11px;border:none;background:none;color:var(--text-light);cursor:pointer;font-family:inherit;padding:0 2px}
-.pri-高{color:#8B3A3A}
-.pri-中{color:#9B6A2A}
-.pri-低{color:var(--sage)}
+    /* small SVG border flourish */
+    .hero-flourish {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
 
-/* ── JOURNAL ── */
-.journal-card{background:var(--bg-card);border:1px solid var(--border-soft);border-radius:16px;padding:22px 24px;position:relative}
-.journal-card::before{content:'';position:absolute;top:10px;left:10px;width:7px;height:7px;background:var(--gold);border-radius:50%;opacity:.5}
-.journal-inp{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:10px;font-size:14px;background:var(--bg);color:var(--text);resize:none;min-height:90px;font-family:'Zen Kaku Gothic New',sans-serif;line-height:1.8}
-.journal-inp:focus{outline:none;border-color:var(--gold)}
-.journal-inp::placeholder{color:var(--text-light)}
-.journal-save{margin-top:8px;padding:8px 18px;background:none;border:1px solid var(--border);border-radius:8px;font-size:13px;color:var(--text-mid);cursor:pointer;font-family:inherit;transition:all .18s}
-.journal-save:hover{border-color:var(--gold);color:var(--coffee)}
+    .hero-flourish span {
+      font-family: 'DM Mono', monospace;
+      font-size: 10.5px;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--coffee);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
 
-.log-list{margin-top:16px;display:flex;flex-direction:column;gap:10px;max-height:260px;overflow-y:auto}
-.log-item{padding:11px 14px;background:var(--bg-warm);border-radius:10px;border-left:3px solid var(--gold)}
-.log-date{font-size:11px;color:var(--text-light);margin-bottom:4px}
-.log-text{font-size:13px;color:var(--text);line-height:1.7}
+    .flourish-line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, var(--border) 0%, transparent 100%);
+    }
 
-/* ── FOOTER ── */
-footer{border-top:1px solid var(--border-soft);padding:28px 24px;text-align:center}
-.footer-quote{font-family:'Italianno',cursive;font-size:1.3rem;color:var(--gold);margin-bottom:8px}
-.footer-links{display:flex;justify-content:center;gap:20px}
-.footer-links a{font-size:13px;color:var(--text-light);text-decoration:none;transition:color .2s}
-.footer-links a:hover{color:var(--coffee)}
+    .hero h1 {
+      font-family: 'Fraunces', serif;
+      font-size: 56px;
+      font-weight: 900;
+      line-height: 1.1;
+      color: var(--text);
+      margin-bottom: 14px;
+      letter-spacing: -0.02em;
+    }
 
-@media(max-width:640px){
-  .topnav{padding:0 16px}
-  .nav-links{display:none}
-  .w-grid{grid-template-columns:repeat(2,1fr)}
-}
-</style>
+    .hero h1 em {
+      font-style: italic;
+      font-weight: 300;
+      color: var(--coffee);
+    }
+
+    .hero-sub {
+      font-size: 16px;
+      font-weight: 300;
+      color: var(--text-mid);
+      max-width: 480px;
+      line-height: 1.85;
+      margin-bottom: 32px;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 0;
+    }
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      padding-right: 28px;
+      margin-right: 28px;
+      border-right: 1px solid var(--border-soft);
+    }
+
+    .stat:last-child { border-right: none; padding-right: 0; margin-right: 0; }
+
+    .stat-num {
+      font-family: 'Fraunces', serif;
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      font-weight: 300;
+      color: var(--text-light);
+    }
+
+    /* ─── LAYOUT ─── */
+    .content-wrap {
+      max-width: 1020px;
+      margin: 0 auto;
+      padding: 52px 52px 40px;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 48px;
+      align-items: start;
+    }
+
+    /* ─── SECTION HEADER ─── */
+    .section { margin-bottom: 52px; }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 26px;
+    }
+
+    .section-title {
+      font-family: 'Fraunces', serif;
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .section-head::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: repeating-linear-gradient(
+        90deg,
+        var(--border) 0px, var(--border) 4px,
+        transparent 4px, transparent 8px
+      );
+    }
+
+    /* ─── PROJECT CARDS ─── */
+    .cards { display: flex; flex-direction: column; gap: 14px; }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: 14px;
+      padding: 22px 24px 20px;
+      position: relative;
+      transition: box-shadow 0.22s, transform 0.22s;
+      overflow: hidden;
+    }
+
+    /* hand-drawn corner dashes */
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 14px;
+      background-image:
+        radial-gradient(circle at 8px 8px, var(--gold) 1.5px, transparent 1.5px),
+        radial-gradient(circle at calc(100% - 8px) 8px, var(--gold) 1.5px, transparent 1.5px),
+        radial-gradient(circle at 8px calc(100% - 8px), var(--gold) 1.5px, transparent 1.5px),
+        radial-gradient(circle at calc(100% - 8px) calc(100% - 8px), var(--gold) 1.5px, transparent 1.5px);
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    .card:hover {
+      box-shadow: 0 8px 32px rgba(155, 102, 68, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .card-emoji {
+      font-size: 18px;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+
+    .card-title {
+      font-size: 14.5px;
+      font-weight: 500;
+      color: var(--text);
+      line-height: 1.45;
+    }
+
+    .badge {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      font-weight: 300;
+      font-style: italic;
+      padding: 3px 11px;
+      border-radius: 20px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .badge-doing { background: #FAF0E8; color: var(--coffee);  border: 1px solid #E8D0BC; }
+    .badge-done  { background: #EBF2EC; color: var(--sage);    border: 1px solid #C4DACA; }
+    .badge-plan  { background: #F4EEF8; color: #8E6BAE;        border: 1px solid #D8CAE8; }
+
+    .card-body {
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--text-mid);
+      line-height: 1.82;
+      margin-bottom: 14px;
+    }
+
+    .card-meta {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 10.5px;
+      font-weight: 300;
+      color: var(--text-light);
+      background: var(--bg-warm);
+      border: 1px solid var(--border-soft);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .card-date {
+      font-family: 'DM Mono', monospace;
+      font-size: 10.5px;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--text-light);
+      margin-left: auto;
+    }
+
+    /* ─── LOG ─── */
+    .log { display: flex; flex-direction: column; }
+
+    .log-entry {
+      display: grid;
+      grid-template-columns: 44px 1fr;
+      padding-bottom: 30px;
+    }
+
+    .log-entry:last-child { padding-bottom: 0; }
+
+    .log-axis {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 5px;
+    }
+
+    .log-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 0 4px var(--gold-pale);
+      flex-shrink: 0;
+    }
+
+    .log-stem {
+      width: 1px;
+      flex: 1;
+      margin-top: 8px;
+      background: repeating-linear-gradient(
+        to bottom,
+        var(--border) 0px, var(--border) 3px,
+        transparent 3px, transparent 7px
+      );
+    }
+
+    .log-entry:last-child .log-stem { display: none; }
+
+    .log-content { padding-left: 4px; }
+
+    .log-date {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--text-light);
+      margin-bottom: 4px;
+    }
+
+    .log-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 7px;
+      line-height: 1.45;
+    }
+
+    .log-text {
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--text-mid);
+      line-height: 1.82;
+    }
+
+    .log-text code {
+      font-family: 'DM Mono', monospace;
+      font-size: 11.5px;
+      background: var(--bg-warm);
+      color: var(--coffee);
+      padding: 1px 6px;
+      border-radius: 3px;
+      border: 1px solid var(--border-soft);
+    }
+
+    /* ─── SIDEBAR WIDGETS ─── */
+    .widget {
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: 16px;
+      padding: 22px 22px 20px;
+      margin-bottom: 18px;
+      position: relative;
+    }
+
+    /* top ribbon stripe */
+    .widget-ribbon {
+      position: absolute;
+      top: 0; left: 20px; right: 20px;
+      height: 2px;
+      border-radius: 0 0 2px 2px;
+      background: linear-gradient(90deg, var(--gold-pale), var(--gold), var(--gold-pale));
+    }
+
+    .widget-title {
+      font-family: 'Fraunces', serif;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    /* ─── ABOUT WIDGET ─── */
+    .about-avatar {
+      width: 54px; height: 54px;
+      border-radius: 50%;
+      background: var(--gold-pale);
+      border: 2px solid var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 12px;
+    }
+
+    .about-name {
+      font-family: 'Fraunces', serif;
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+
+    .about-role {
+      font-size: 12px;
+      font-weight: 300;
+      color: var(--text-light);
+      line-height: 1.65;
+      margin-bottom: 12px;
+    }
+
+    .about-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .about-tag {
+      font-size: 11px;
+      font-weight: 300;
+      background: var(--bg-warm);
+      border: 1px solid var(--border);
+      color: var(--text-mid);
+      padding: 2px 9px;
+      border-radius: 20px;
+    }
+
+    .about-desc {
+      font-size: 12.5px;
+      font-weight: 300;
+      color: var(--text-mid);
+      line-height: 1.78;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-soft);
+    }
+
+    /* ─── QUOTE WIDGET ─── */
+    .quote-widget {
+      background: var(--bg-warm);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px;
+      margin-bottom: 18px;
+      text-align: center;
+    }
+
+    .quote-deco {
+      font-family: 'Italianno', cursive;
+      font-size: 44px;
+      color: var(--gold);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .quote-text {
+      font-family: 'Fraunces', serif;
+      font-size: 15.5px;
+      font-style: italic;
+      font-weight: 300;
+      color: var(--text);
+      line-height: 1.7;
+      margin-bottom: 10px;
+    }
+
+    .quote-source {
+      font-family: 'DM Mono', monospace;
+      font-size: 10.5px;
+      font-weight: 300;
+      color: var(--text-light);
+    }
+
+    /* ─── ROADMAP ─── */
+    .roadmap-list { display: flex; flex-direction: column; gap: 13px; }
+
+    .roadmap-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: var(--bg-white);
+      border: 1px solid var(--border-soft);
+      transition: border-color 0.18s;
+    }
+
+    .roadmap-item:hover { border-color: var(--gold); }
+
+    .roadmap-icon { font-size: 18px; flex-shrink: 0; }
+
+    .roadmap-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    .roadmap-when {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      font-weight: 300;
+      color: var(--text-light);
+      margin-top: 1px;
+    }
+
+    /* ─── FOOTER ─── */
+    .footer {
+      border-top: 1px solid var(--border-soft);
+      padding: 28px 52px;
+      max-width: 1020px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer-quote {
+      font-family: 'Italianno', cursive;
+      font-size: 20px;
+      color: var(--text-light);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .footer-links a {
+      font-size: 12px;
+      font-weight: 300;
+      color: var(--text-light);
+      text-decoration: none;
+      font-family: 'DM Mono', monospace;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--coffee); }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 768px) {
+      .topnav { padding: 0 20px; }
+      .topnav-links { display: none; }
+      .hero { padding: 40px 20px 36px; }
+      .hero h1 { font-size: 36px; }
+      .content-wrap { padding: 36px 20px; }
+      .two-col { grid-template-columns: 1fr; }
+      .hero-stats { gap: 16px; }
+      .stat { padding-right: 16px; margin-right: 16px; }
+      .footer { padding: 20px; }
+    }
+  </style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav class="topnav">
-  <div class="nav-brand"><span>✦</span>RAY 的升級手札</div>
-  <div class="nav-links">
-    <a href="#tracker" class="active">身體追蹤</a>
-    <a href="#lists">清單</a>
-    <a href="#journal">日誌</a>
+<!-- TOP NAV -->
+<header class="topnav">
+  <div class="brand">
+    <div class="brand-icon">✦</div>
+    <span class="brand-text">RAY 的<em>升級手札</em></span>
+    <span class="brand-sub">growth journal</span>
   </div>
-</nav>
+  <ul class="topnav-links">
+    <li><a href="#projects">學習計畫</a></li>
+    <li><a href="#log">學習日誌</a></li>
+    <li><a href="#roadmap">未來規劃</a></li>
+    <li><a href="https://github.com/yankee40505" target="_blank">GitHub ↗</a></li>
+  </ul>
+</header>
 
 <!-- HERO -->
-<div class="hero">
-  <svg class="hero-deco" viewBox="0 0 900 160" xmlns="http://www.w3.org/2000/svg">
-    <!-- small flowers -->
-    <g transform="translate(80,60)" stroke="#C8A96A" stroke-width="1" fill="none">
-      <circle cx="0" cy="0" r="6" fill="#F0E4C8"/>
-      <line x1="0" y1="-14" x2="0" y2="14"/><line x1="-14" y1="0" x2="14" y2="0"/>
-      <ellipse cx="0" cy="-11" rx="5" ry="8" transform="rotate(0)"/>
-      <ellipse cx="0" cy="-11" rx="5" ry="8" transform="rotate(72)"/>
-      <ellipse cx="0" cy="-11" rx="5" ry="8" transform="rotate(144)"/>
-      <ellipse cx="0" cy="-11" rx="5" ry="8" transform="rotate(216)"/>
-      <ellipse cx="0" cy="-11" rx="5" ry="8" transform="rotate(288)"/>
-    </g>
-    <g transform="translate(820,50)" stroke="#D4897A" stroke-width="1" fill="none">
-      <circle cx="0" cy="0" r="5" fill="#FAE8E4"/>
-      <ellipse cx="0" cy="-10" rx="4" ry="7" transform="rotate(0)"/>
-      <ellipse cx="0" cy="-10" rx="4" ry="7" transform="rotate(90)"/>
-      <ellipse cx="0" cy="-10" rx="4" ry="7" transform="rotate(180)"/>
-      <ellipse cx="0" cy="-10" rx="4" ry="7" transform="rotate(270)"/>
-    </g>
-    <!-- stars -->
-    <text x="160" y="40" font-size="14" fill="#C8A96A">✦</text>
-    <text x="750" y="90" font-size="10" fill="#D4897A">✦</text>
-    <text x="450" y="30" font-size="8" fill="#7A9B84">✦</text>
-    <!-- leaves -->
-    <g transform="translate(700,130)" stroke="#7A9B84" stroke-width="1" fill="#EBF3EC">
-      <ellipse cx="0" cy="0" rx="6" ry="12" transform="rotate(-30)"/>
-      <ellipse cx="14" cy="-4" rx="5" ry="10" transform="rotate(15)"/>
-    </g>
-    <g transform="translate(200,140)" stroke="#7A9B84" stroke-width="1" fill="#EBF3EC">
-      <ellipse cx="0" cy="0" rx="5" ry="11" transform="rotate(20)"/>
-    </g>
-    <!-- dotted line borders -->
-    <line x1="40" y1="155" x2="860" y2="155" stroke="#E8DDD0" stroke-width="1" stroke-dasharray="3,5"/>
-  </svg>
-  <h1 class="hero-title">升級手札<br/><em>Ray's Growth Log</em></h1>
-  <p class="hero-sub">身體 · 習慣 · 清單 · 紀錄</p>
-  <div class="hero-divider"></div>
+<section class="hero">
+  <div class="hero-deco hero-deco-1">✦</div>
+
+  <div class="hero-flourish">
+    <span class="deco-flower"></span>
+    <span>成長紀錄 · New Taipei · Since 2024</span>
+    <div class="flourish-line"></div>
+    <span class="deco-star"></span>
+  </div>
+
+  <h1>不斷學習，<br>用力<em>活著</em>。</h1>
+
+  <p class="hero-sub">
+    記錄每一次卡關、每一個突破、<br>每一個讓生活更豐富的嘗試。
+  </p>
+
+  <div class="hero-stats">
+    <div class="stat">
+      <span class="stat-num">4+</span>
+      <span class="stat-label">年教學經驗</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">3</span>
+      <span class="stat-label">進行中的計畫</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">2027</span>
+      <span class="stat-label">紐西蘭啟程</span>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN CONTENT -->
+<div class="content-wrap">
+  <div class="two-col">
+
+    <!-- LEFT COLUMN -->
+    <div>
+
+      <!-- PROJECTS -->
+      <section class="section" id="projects">
+        <div class="section-head">
+          <span class="deco-leaf"></span>
+          <h2 class="section-title">學習計畫</h2>
+        </div>
+        <div class="cards">
+
+          <div class="card">
+            <div class="card-top">
+              <div class="card-title"><span class="card-emoji">🌐</span>前端開發 — HTML / CSS / JavaScript</div>
+              <span class="badge badge-doing">進行中</span>
+            </div>
+            <div class="card-body">
+              從零建立 Ray's English Corner 教學網站，學習靜態網站架構與 GitHub Pages 部署。目前完成 Layer 1 架構重構，實作共用 nav/footer 注入機制，讓改動只發生在一個地方。
+            </div>
+            <div class="card-meta">
+              <span class="tag">HTML/CSS</span>
+              <span class="tag">JavaScript</span>
+              <span class="tag">GitHub Pages</span>
+              <span class="card-date">2024.05 →</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-top">
+              <div class="card-title"><span class="card-emoji">🐍</span>Python 自動化 — 出題系統開發</div>
+              <span class="badge badge-plan">計畫中</span>
+            </div>
+            <div class="card-body">
+              計畫以 Python 串接 Claude API，打造自動出題工具，整合現有題庫 JSON 資料，產出格式化的英文考卷，讓備課效率翻倍。
+            </div>
+            <div class="card-meta">
+              <span class="tag">Python</span>
+              <span class="tag">Claude API</span>
+              <span class="tag">JSON</span>
+              <span class="card-date">2025 Q1 →</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-top">
+              <div class="card-title"><span class="card-emoji">🎬</span>影像剪輯 — 心靈電影院 Reels 系列</div>
+              <span class="badge badge-doing">進行中</span>
+            </div>
+            <div class="card-body">
+              為 @biglazyseals 製作電影短評 Reels，學習節奏剪輯與旁白錄製。首篇以《白日夢冒險王》為題——最難的功課是說出真實的感受，而不是寫電影介紹。
+            </div>
+            <div class="card-meta">
+              <span class="tag">Premiere Pro</span>
+              <span class="tag">After Effects</span>
+              <span class="tag">Reels</span>
+              <span class="card-date">2024.01 →</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-top">
+              <div class="card-title"><span class="card-emoji">🎞</span>大懶豹國際娛樂 — 東南亞電影策展</div>
+              <span class="badge badge-doing">進行中</span>
+            </div>
+            <div class="card-body">
+              與 James、Emily 共同創辦，以東南亞電影策展為核心，目標服務桃園中壢印尼語社群。學的不只是電影，還有怎麼把一個想法變成一件真實發生的事。
+            </div>
+            <div class="card-meta">
+              <span class="tag">策展企劃</span>
+              <span class="tag">提案寫作</span>
+              <span class="tag">Netlify</span>
+              <span class="card-date">2024.05 →</span>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- LOG -->
+      <section class="section" id="log">
+        <div class="section-head">
+          <span class="deco-star"></span>
+          <h2 class="section-title">學習日誌</h2>
+        </div>
+        <div class="log">
+
+          <div class="log-entry">
+            <div class="log-axis">
+              <div class="log-dot"></div>
+              <div class="log-stem"></div>
+            </div>
+            <div class="log-content">
+              <div class="log-date">2025 · 06</div>
+              <div class="log-title">完成 Layer 1 架構重構 — 讓改動只發生在一個地方</div>
+              <div class="log-text">
+                把原本每頁各自複製 nav/footer 的做法，改為用 <code>main.js</code> 統一注入。踩到了 <code>DOMContentLoaded</code> 的時機點問題，以及 fetch 相對路徑在不同目錄層級的差異。這件事比語法本身更重要。
+              </div>
+            </div>
+          </div>
+
+          <div class="log-entry">
+            <div class="log-axis">
+              <div class="log-dot" style="background:var(--sage); box-shadow: 0 0 0 4px #DCF0E0;"></div>
+              <div class="log-stem"></div>
+            </div>
+            <div class="log-content">
+              <div class="log-date">2025 · 05</div>
+              <div class="log-title">大懶豹官網重製 — 用 Tailwind CSS 做出有個性的設計</div>
+              <div class="log-text">
+                學到了 utility-first 思維，以及如何在不寫 custom CSS 的情況下做出有個性的畫面。Hanken Grotesk + Noto Sans TC 的字型組合意外地好看——有時候最好的發現藏在嘗試裡。
+              </div>
+            </div>
+          </div>
+
+          <div class="log-entry">
+            <div class="log-axis">
+              <div class="log-dot" style="background:var(--blush); box-shadow: 0 0 0 4px #F5DDD8;"></div>
+              <div class="log-stem"></div>
+            </div>
+            <div class="log-content">
+              <div class="log-date">2025 · 05</div>
+              <div class="log-title">心靈電影院首集腳本 — 文學感不是靠華麗詞藻，是靠誠實</div>
+              <div class="log-text">
+                為《白日夢冒險王》寫了第一個 Reels 腳本。最大的挑戰是避免變成「電影介紹」，而是說出自己看這部片時的感受。
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+
+    <!-- RIGHT SIDEBAR -->
+    <div>
+
+      <!-- ABOUT -->
+      <div class="widget">
+        <div class="widget-ribbon"></div>
+        <div class="about-avatar">🌿</div>
+        <div class="about-name">Ray 康誠</div>
+        <div class="about-role">英文教師 · 前端自學者 · 影展策劃人<br>新北板橋 · TOEIC 970</div>
+        <div class="about-tags">
+          <span class="about-tag">🎬 電影</span>
+          <span class="about-tag">💻 前端</span>
+          <span class="about-tag">📚 教育</span>
+          <span class="about-tag">✈️ 旅行</span>
+        </div>
+        <div class="about-desc">
+          我同時活在幾個世界裡：課堂、程式、電影、還有一個尚未成形的東南亞影展。這本手札是我給未來自己的信。
+        </div>
+      </div>
+
+      <!-- QUOTE -->
+      <div class="quote-widget">
+        <div class="quote-deco">❝</div>
+        <div class="quote-text">在知識流失之前把它釘住。幾年後回頭看，這些紀錄會成為你成長最誠實的見證。</div>
+        <div class="quote-source">— 給自己的提醒</div>
+      </div>
+
+      <!-- ROADMAP -->
+      <div class="widget" id="roadmap">
+        <div class="widget-ribbon"></div>
+        <div class="widget-title">
+          <span class="deco-flower"></span>
+          接下來的事
+        </div>
+        <div class="roadmap-list">
+          <div class="roadmap-item">
+            <span class="roadmap-icon">🏎</span>
+            <div>
+              <div class="roadmap-name">新加坡 F1 大獎賽</div>
+              <div class="roadmap-when">2026.09 · 人生第一場 F1</div>
+            </div>
+          </div>
+          <div class="roadmap-item">
+            <span class="roadmap-icon">✈️</span>
+            <div>
+              <div class="roadmap-name">名古屋之旅</div>
+              <div class="roadmap-when">2026 夏 · 充電之旅</div>
+            </div>
+          </div>
+          <div class="roadmap-item">
+            <span class="roadmap-icon">🎬</span>
+            <div>
+              <div class="roadmap-name">大懶豹首場放映</div>
+              <div class="roadmap-when">籌備中 · 桃園 / 新北</div>
+            </div>
+          </div>
+          <div class="roadmap-item">
+            <span class="roadmap-icon">🌐</span>
+            <div>
+              <div class="roadmap-name">Python 自動出題工具</div>
+              <div class="roadmap-when">開發中 · Claude API</div>
+            </div>
+          </div>
+          <div class="roadmap-item">
+            <span class="roadmap-icon">🇳🇿</span>
+            <div>
+              <div class="roadmap-name">紐西蘭打工度假</div>
+              <div class="roadmap-when">2027 年中 · 簽證已核准</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
 </div>
 
-<div class="container">
-
-<!-- ═══ BODY TRACKER ═══ -->
-<div id="tracker">
-  <div class="section-header">
-    <div class="section-icon">🌿</div>
-    <div class="section-label">每日身體追蹤</div>
-    <div class="section-line"></div>
-  </div>
-
-  <div class="card">
-    <!-- day nav -->
-    <div class="day-nav">
-      <div>
-        <div class="day-title" id="day-title">今天</div>
-        <div class="day-date" id="day-date"></div>
-      </div>
-      <div class="day-btn-wrap">
-        <button class="day-btn" onclick="chDay(-1)">←</button>
-        <button class="day-btn" onclick="goToday()">今天</button>
-        <button class="day-btn" onclick="chDay(1)">→</button>
-      </div>
-    </div>
-
-    <!-- week strip -->
-    <div class="week-strip" id="week-strip"></div>
-
-    <!-- streak -->
-    <div class="streak-bar">
-      <span class="streak-n" id="streak-n">0</span>
-      <span class="streak-txt">天連續紀錄 ✦ keep going</span>
-    </div>
-
-    <!-- stats -->
-    <div class="stats-grid">
-      <div class="stat-box"><div class="stat-lbl">睡眠</div><div class="stat-val" id="s-sleep">—<span>小時</span></div></div>
-      <div class="stat-box"><div class="stat-lbl">習慣</div><div class="stat-val" id="s-habit">0<span>/ 5</span></div></div>
-      <div class="stat-box"><div class="stat-lbl">喝水</div><div class="stat-val" id="s-water">0<span>壺</span></div></div>
-      <div class="stat-box"><div class="stat-lbl">心情</div><div class="stat-val" style="font-size:1rem" id="s-mood">—</div></div>
-    </div>
-
-    <!-- SLEEP -->
-    <div class="sec-inner-title">🌙 睡眠</div>
-    <div class="sleep-row" style="margin-bottom:16px">
-      <div>
-        <div class="field-lbl">就寢</div>
-        <input type="time" class="t-input" id="t-start" value="23:00" oninput="calcSleep()">
-      </div>
-      <div>
-        <div class="field-lbl">起床</div>
-        <input type="time" class="t-input" id="t-end" value="07:00" oninput="calcSleep()">
-      </div>
-      <div>
-        <div class="field-lbl">評估</div>
-        <div class="sleep-badge sb-ok" id="sleep-badge">8.0 小時</div>
-      </div>
-    </div>
-
-    <!-- WORKOUT -->
-    <div class="sec-inner-title">💪 運動</div>
-    <div class="w-grid">
-      <button class="w-btn" id="w-elastic" onclick="togW('elastic')"><span class="w-icon">🪢</span>彈力繩訓練</button>
-      <button class="w-btn" id="w-wing" onclick="togW('wing')"><span class="w-icon">🥋</span>詠春拳</button>
-      <button class="w-btn" id="w-cardio" onclick="togW('cardio')"><span class="w-icon">🏃</span>有氧/跑步</button>
-      <button class="w-btn" id="w-walk" onclick="togW('walk')"><span class="w-icon">🚶</span>散步</button>
-      <button class="w-btn" id="w-stretch" onclick="togW('stretch')"><span class="w-icon">🧘</span>伸展冥想</button>
-      <button class="w-btn" id="w-rest" onclick="togW('rest')"><span class="w-icon">😴</span>休息日</button>
-    </div>
-    <textarea class="note-inp" id="w-note" placeholder="備注強度、組數、感受…" oninput="saveDay()"></textarea>
-
-    <!-- HABITS -->
-    <div class="sec-inner-title" style="margin-top:16px">✦ 每日習慣</div>
-    <div class="habit-list" id="habit-list"></div>
-
-    <!-- WATER -->
-    <div class="sec-inner-title" style="margin-top:16px">💧 喝水</div>
-    <div class="water-jugs" id="water-jugs"></div>
-
-    <!-- MOOD -->
-    <div class="sec-inner-title" style="margin-top:16px">🌸 心情 & 能量</div>
-    <div class="mood-row" id="mood-row"></div>
-
-    <button class="save-btn" style="margin-top:16px" onclick="saveToast()">儲存今日紀錄 ✦</button>
-  </div>
-</div>
-
-<!-- ═══ LISTS ═══ -->
-<div id="lists">
-  <div class="section-header">
-    <div class="section-icon">📋</div>
-    <div class="section-label">清單</div>
-    <div class="section-line"></div>
-  </div>
-
-  <div class="list-grid">
-    <!-- TODO -->
-    <div class="list-card">
-      <div class="list-title"><span class="ic">✅</span>待辦清單</div>
-      <div class="add-row">
-        <input class="add-inp" id="todo-inp" placeholder="新增待辦…" onkeydown="if(event.key==='Enter')addTodo()">
-        <button class="add-btn" onclick="addTodo()">+ 新增</button>
-      </div>
-      <div class="item-list" id="todo-list"></div>
-    </div>
-
-    <!-- READ -->
-    <div class="list-card">
-      <div class="list-title"><span class="ic">📚</span>待讀清單</div>
-      <div class="add-row">
-        <input class="add-inp" id="read-inp" placeholder="書名 / 文章…" onkeydown="if(event.key==='Enter')addRead()">
-        <button class="add-btn" onclick="addRead()">+ 新增</button>
-      </div>
-      <div class="item-list" id="read-list"></div>
-    </div>
-  </div>
-</div>
-
-<!-- ═══ JOURNAL ═══ -->
-<div id="journal">
-  <div class="section-header">
-    <div class="section-icon">🖊</div>
-    <div class="section-label">每日紀錄</div>
-    <div class="section-line"></div>
-  </div>
-  <div class="journal-card">
-    <textarea class="journal-inp" id="j-inp" placeholder="今天學到了什麼？有什麼感受？想對未來的自己說什麼…"></textarea>
-    <button class="journal-save" onclick="saveJournal()">儲存今日紀錄 ✦</button>
-    <div class="log-list" id="log-list"></div>
-  </div>
-</div>
-
-</div><!-- /container -->
-
-<div class="toast" id="toast">已儲存 ✦</div>
-
-<footer>
-  <div class="footer-quote">"每一天都是一個新的版本。"</div>
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-quote">每一天都是一個新的版本。 <span class="deco-star"></span></div>
   <div class="footer-links">
+    <a href="https://github.com/yankee40505" target="_blank">GitHub</a>
     <a href="https://www.instagram.com/biglazyseals" target="_blank">@biglazyseals</a>
     <a href="https://fancy-salamander-cff6ac.netlify.app" target="_blank">大懶豹</a>
   </div>
 </footer>
 
-<script>
-// ── CONSTANTS
-const HABITS=[
-  {id:'noA',txt:'戒多巴胺（無A片）'},
-  {id:'protein',txt:'蛋白質攝取達標'},
-  {id:'phone',txt:'睡前1小時無手機'},
-  {id:'meditate',txt:'冥想 / 靜心'},
-  {id:'read',txt:'閱讀 15 分鐘'}
-];
-const MOODS=['🔥 超好','😊 不錯','😐 普通','😔 低落','😩 很累'];
-const WORKOUTS=['elastic','wing','cardio','walk','stretch','rest'];
-const DAYS=['日','一','二','三','四','五','六'];
-
-// ── STATE
-let TODAY=new Date();TODAY.setHours(0,0,0,0);
-let curDay=new Date(TODAY);
-let tData={};   // tracker per day
-let todos=[];   // [{id,text,done,createdAt}]
-let reads=[];   // [{id,text,done,pri,createdAt}]
-let journals=[]; // [{date,text}]
-
-// ── STORAGE HELPERS
-function save(){
-  localStorage.setItem('rj_tracker',JSON.stringify(tData));
-  localStorage.setItem('rj_todos',JSON.stringify(todos));
-  localStorage.setItem('rj_reads',JSON.stringify(reads));
-  localStorage.setItem('rj_journals',JSON.stringify(journals));
-}
-function load(){
-  try{tData=JSON.parse(localStorage.getItem('rj_tracker')||'{}')}catch(e){tData={}}
-  try{todos=JSON.parse(localStorage.getItem('rj_todos')||'[]')}catch(e){todos=[]}
-  try{reads=JSON.parse(localStorage.getItem('rj_reads')||'[]')}catch(e){reads=[]}
-  try{journals=JSON.parse(localStorage.getItem('rj_journals')||'[]')}catch(e){journals=[]}
-}
-function dateKey(d){return d.toISOString().slice(0,10)}
-function getDay(d){return tData[dateKey(d)]||{ts:'23:00',te:'07:00',workouts:[],habits:{},water:0,mood:'',note:''}}
-
-// ── TRACKER
-function calcSleep(){
-  const s=document.getElementById('t-start').value;
-  const e=document.getElementById('t-end').value;
-  if(!s||!e)return;
-  const [sh,sm]=s.split(':').map(Number);
-  const [eh,em]=e.split(':').map(Number);
-  let mins=(eh*60+em)-(sh*60+sm);
-  if(mins<=0)mins+=1440;
-  const hrs=(mins/60).toFixed(1);
-  const badge=document.getElementById('sleep-badge');
-  badge.textContent=hrs+' 小時';
-  badge.className='sleep-badge '+(hrs>=7.5?'sb-good':hrs>=6?'sb-ok':'sb-bad');
-  document.getElementById('s-sleep').innerHTML=hrs+'<span>小時</span>';
-  saveDay();
-}
-
-function togW(w){
-  document.getElementById('w-'+w).classList.toggle('active');
-  saveDay();
-}
-
-function saveDay(){
-  const k=dateKey(curDay);
-  const d=tData[k]||{};
-  d.ts=document.getElementById('t-start').value;
-  d.te=document.getElementById('t-end').value;
-  d.workouts=WORKOUTS.filter(w=>document.getElementById('w-'+w)?.classList.contains('active'));
-  d.habits={};
-  HABITS.forEach(h=>{d.habits[h.id]=!!document.getElementById('h-'+h.id)?.classList.contains('done')});
-  d.water=document.querySelectorAll('.jug.filled').length;
-  d.mood=document.querySelector('.mood-btn.active')?.dataset.mood||'';
-  d.note=document.getElementById('w-note').value;
-  tData[k]=d;
-  updateStats();updateWeek();updateStreak();save();
-}
-
-function loadDay(){
-  const d=getDay(curDay);
-  document.getElementById('t-start').value=d.ts||'23:00';
-  document.getElementById('t-end').value=d.te||'07:00';
-  calcSleep();
-  WORKOUTS.forEach(w=>document.getElementById('w-'+w)?.classList.toggle('active',(d.workouts||[]).includes(w)));
-  HABITS.forEach(h=>{
-    const el=document.getElementById('h-'+h.id);
-    if(!el)return;
-    const done=!!(d.habits&&d.habits[h.id]);
-    el.classList.toggle('done',done);
-    el.querySelector('.h-circle').textContent=done?'✓':'';
-  });
-  document.querySelectorAll('.jug').forEach((j,i)=>j.classList.toggle('filled',i<(d.water||0)));
-  document.querySelectorAll('.mood-btn').forEach(b=>b.classList.toggle('active',b.dataset.mood===(d.mood||'')));
-  document.getElementById('w-note').value=d.note||'';
-  updateStats();
-}
-
-function updateStats(){
-  const d=getDay(curDay);
-  const hc=HABITS.filter(h=>d.habits&&d.habits[h.id]).length;
-  document.getElementById('s-habit').innerHTML=hc+'<span>/ 5</span>';
-  document.getElementById('s-water').innerHTML=(d.water||0)+'<span>壺</span>';
-  document.getElementById('s-mood').textContent=d.mood||'—';
-}
-
-function updateWeek(){
-  const strip=document.getElementById('week-strip');
-  strip.innerHTML='';
-  for(let i=6;i>=0;i--){
-    const d=new Date(TODAY);d.setDate(TODAY.getDate()-i);
-    const rec=tData[dateKey(d)];
-    const isToday=i===0;
-    const isCur=dateKey(d)===dateKey(curDay);
-    const div=document.createElement('div');
-    div.className='wd'+(isToday?' today':'')+(isCur&&!isToday?' cur':'');
-    const score=rec?Math.round((Object.values(rec.habits||{}).filter(Boolean).length/HABITS.length)*100):null;
-    div.innerHTML=`<div class="wd-lbl">${DAYS[d.getDay()]}</div><div class="wd-val">${score!==null?score+'%':'—'}</div>`;
-    div.onclick=()=>{curDay=new Date(d);updateDayHeader();loadDay();updateWeek()};
-    strip.appendChild(div);
-  }
-}
-
-function updateStreak(){
-  let n=0,d=new Date(TODAY);
-  while(true){
-    const rec=tData[dateKey(d)];
-    if(!rec||Object.values(rec.habits||{}).filter(Boolean).length<1)break;
-    n++;d.setDate(d.getDate()-1);
-  }
-  document.getElementById('streak-n').textContent=n;
-}
-
-function updateDayHeader(){
-  const isToday=dateKey(curDay)===dateKey(TODAY);
-  document.getElementById('day-title').textContent=isToday?'今天':curDay.toLocaleDateString('zh-TW',{weekday:'short',month:'long',day:'numeric'});
-  document.getElementById('day-date').textContent=curDay.toLocaleDateString('zh-TW',{year:'numeric',month:'long',day:'numeric'});
-}
-
-function chDay(d){curDay.setDate(curDay.getDate()+d);updateDayHeader();loadDay();updateWeek()}
-function goToday(){curDay=new Date(TODAY);updateDayHeader();loadDay();updateWeek()}
-
-function saveToast(){
-  saveDay();
-  const t=document.getElementById('toast');
-  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000);
-}
-
-// ── RENDER HABITS
-function renderHabits(){
-  const c=document.getElementById('habit-list');c.innerHTML='';
-  HABITS.forEach(h=>{
-    const div=document.createElement('div');
-    div.className='habit-item';div.id='h-'+h.id;
-    div.onclick=()=>{
-      div.classList.toggle('done');
-      div.querySelector('.h-circle').textContent=div.classList.contains('done')?'✓':'';
-      saveDay();
-    };
-    div.innerHTML=`<div class="h-left"><div class="h-circle"></div>${h.txt}</div><span style="font-size:13px;color:var(--text-light)">›</span>`;
-    c.appendChild(div);
-  });
-}
-
-// ── RENDER WATER (3 jugs)
-function renderWater(){
-  const c=document.getElementById('water-jugs');c.innerHTML='';
-  for(let i=0;i<3;i++){
-    const j=document.createElement('div');
-    j.className='jug';j.innerHTML='🫙';
-    j.setAttribute('title','第'+(i+1)+'壺水');
-    j.onclick=()=>{
-      const jugs=document.querySelectorAll('.jug');
-      const filled=document.querySelectorAll('.jug.filled').length;
-      if(j.classList.contains('filled')&&i===filled-1){j.classList.remove('filled')}
-      else{jugs.forEach((jj,ji)=>jj.classList.toggle('filled',ji<=i))}
-      document.getElementById('s-water').innerHTML=document.querySelectorAll('.jug.filled').length+'<span>壺</span>';
-      saveDay();
-    };
-    c.appendChild(j);
-  }
-  const lbl=document.createElement('span');lbl.className='water-lbl';lbl.id='w-lbl';lbl.textContent='每壺約 500–600ml';
-  c.appendChild(lbl);
-}
-
-// ── RENDER MOODS
-function renderMoods(){
-  const c=document.getElementById('mood-row');c.innerHTML='';
-  MOODS.forEach(m=>{
-    const b=document.createElement('button');
-    b.className='mood-btn';b.dataset.mood=m;b.textContent=m;
-    b.onclick=()=>{
-      document.querySelectorAll('.mood-btn').forEach(x=>x.classList.remove('active'));
-      b.classList.add('active');
-      document.getElementById('s-mood').textContent=m;
-      saveDay();
-    };
-    c.appendChild(b);
-  });
-}
-
-// ── TODO
-function renderTodos(){
-  const c=document.getElementById('todo-list');c.innerHTML='';
-  const sorted=[...todos].sort((a,b)=>a.done-b.done);
-  sorted.forEach(t=>{
-    const div=document.createElement('div');
-    div.className='list-item'+(t.done?' done-item':'');
-    div.innerHTML=`<div class="item-check" onclick="togTodo('${t.id}')">${t.done?'✓':''}</div><span class="item-text">${esc(t.text)}</span><button class="item-del" onclick="delTodo('${t.id}')">×</button>`;
-    c.appendChild(div);
-  });
-}
-function addTodo(){
-  const inp=document.getElementById('todo-inp');
-  const txt=inp.value.trim();if(!txt)return;
-  todos.push({id:uid(),text:txt,done:false,createdAt:new Date().toISOString()});
-  inp.value='';renderTodos();save();
-}
-function togTodo(id){
-  const t=todos.find(x=>x.id===id);if(t){t.done=!t.done;renderTodos();save();}
-}
-function delTodo(id){todos=todos.filter(x=>x.id!==id);renderTodos();save();}
-
-// ── READ LIST
-function renderReads(){
-  const c=document.getElementById('read-list');c.innerHTML='';
-  const sorted=[...reads].sort((a,b)=>{
-    const p={'高':0,'中':1,'低':2};
-    return (p[a.pri]||1)-(p[b.pri]||1)||a.done-b.done;
-  });
-  sorted.forEach(r=>{
-    const div=document.createElement('div');
-    div.className='list-item'+(r.done?' done-item':'');
-    const pri=r.pri||'中';
-    div.innerHTML=`<div class="item-check" onclick="togRead('${r.id}')">${r.done?'✓':''}</div><span class="item-text">${esc(r.text)}</span><select class="pri-select pri-${pri}" title="優先度" onchange="setPri('${r.id}',this.value)"><option ${pri==='高'?'selected':''}>高</option><option ${pri==='中'?'selected':''}>中</option><option ${pri==='低'?'selected':''}>低</option></select><button class="item-del" onclick="delRead('${r.id}')">×</button>`;
-    c.appendChild(div);
-  });
-}
-function addRead(){
-  const inp=document.getElementById('read-inp');
-  const txt=inp.value.trim();if(!txt)return;
-  reads.push({id:uid(),text:txt,done:false,pri:'中',createdAt:new Date().toISOString()});
-  inp.value='';renderReads();save();
-}
-function togRead(id){const r=reads.find(x=>x.id===id);if(r){r.done=!r.done;renderReads();save();}}
-function delRead(id){reads=reads.filter(x=>x.id!==id);renderReads();save();}
-function setPri(id,v){const r=reads.find(x=>x.id===id);if(r){r.pri=v;renderReads();save();}}
-
-// ── JOURNAL
-function saveJournal(){
-  const txt=document.getElementById('j-inp').value.trim();if(!txt)return;
-  const today=dateKey(new Date());
-  const idx=journals.findIndex(j=>j.date===today);
-  if(idx>=0)journals[idx].text=txt;
-  else journals.unshift({date:today,text:txt});
-  document.getElementById('j-inp').value='';
-  renderJournals();save();
-  const t=document.getElementById('toast');t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000);
-}
-function renderJournals(){
-  const c=document.getElementById('log-list');c.innerHTML='';
-  journals.slice(0,20).forEach(j=>{
-    const div=document.createElement('div');div.className='log-item';
-    div.innerHTML=`<div class="log-date">${j.date}</div><div class="log-text">${esc(j.text)}</div>`;
-    c.appendChild(div);
-  });
-}
-
-// ── UTILS
-function uid(){return Math.random().toString(36).slice(2,9)}
-function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
-
-// ── INIT
-load();
-renderHabits();
-renderWater();
-renderMoods();
-renderTodos();
-renderReads();
-renderJournals();
-updateDayHeader();
-loadDay();
-updateWeek();
-updateStreak();
-</script>
 </body>
 </html>
