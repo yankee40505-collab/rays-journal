@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Ray 暑假課表</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,900;1,300&family=Zen+Kaku+Gothic+New:wght@300;400;500&family=Italianno&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#FBF8F3;
+  --bg-card:#FFFDF9;
+  --bg-warm:#F5EFE6;
+  --border:#E8DDD0;
+  --border-soft:#F0E8DC;
+  --text:#2E2318;
+  --text-mid:#6B5540;
+  --text-light:#A8917C;
+  --coffee:#9B6644;
+  --blush:#D4897A;
+  --sage:#7A9B84;
+  --gold:#C8A96A;
+  --gold-pale:#F0E4C8;
+  --blue-soft:#7A9BB5;
+  --blue-pale:#EAF1F7;
+  --green-pale:#EDF5EE;
+  --green:#5A8F6A;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Zen Kaku Gothic New',sans-serif;font-size:14px;line-height:1.7;min-height:100vh;padding:0 0 60px}
+
+/* NAV */
+.topnav{background:var(--bg-card);border-bottom:1px solid var(--border-soft);padding:0 32px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.nav-brand{font-family:'Fraunces',serif;font-size:16px;font-weight:600;color:var(--coffee);letter-spacing:.02em}
+.nav-brand span{font-family:'Italianno',cursive;font-size:20px;margin-right:5px;color:var(--gold)}
+.nav-back{font-size:13px;color:var(--text-light);text-decoration:none;transition:color .2s}
+.nav-back:hover{color:var(--coffee)}
+
+/* HERO */
+.hero{text-align:center;padding:44px 24px 32px;position:relative;overflow:hidden}
+.hero-deco{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;opacity:.3}
+.hero-title{font-family:'Fraunces',serif;font-size:clamp(1.8rem,4vw,2.6rem);font-weight:900;color:var(--coffee);line-height:1.2;margin-bottom:8px}
+.hero-title em{font-style:italic;color:var(--blush)}
+.hero-sub{font-size:13px;color:var(--text-light);letter-spacing:.07em}
+.hero-divider{width:48px;height:1.5px;background:var(--gold);margin:14px auto 0;border-radius:2px}
+
+.container{max-width:980px;margin:0 auto;padding:0 20px}
+
+/* LEGEND */
+.legend{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin:28px 0 20px;padding:14px 20px;background:var(--bg-card);border:1px solid var(--border-soft);border-radius:14px}
+.legend-item{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--text-mid)}
+.ldot{width:12px;height:12px;border-radius:3px;flex-shrink:0}
+.ldot-booked{background:var(--gold)}
+.ldot-cram{background:var(--blue-soft)}
+.ldot-free{background:transparent;border:1.5px dashed var(--green)}
+
+/* TABLE WRAP */
+.table-wrap{overflow-x:auto;border-radius:14px;border:1px solid var(--border-soft);background:var(--bg-card);margin-bottom:20px}
+table{width:100%;border-collapse:collapse;min-width:640px}
+
+thead th{
+  background:var(--bg-warm);
+  padding:11px 10px;
+  font-size:12px;
+  font-weight:500;
+  letter-spacing:.06em;
+  color:var(--text-mid);
+  text-align:center;
+  border-bottom:1px solid var(--border);
+}
+thead th:first-child{text-align:left;padding-left:16px;color:var(--text-light);font-size:11px;min-width:88px}
+thead th:not(:last-child){border-right:1px solid var(--border-soft)}
+
+tbody tr:not(:last-child) td{border-bottom:1px solid var(--border-soft)}
+td{padding:0;text-align:center;vertical-align:top;border-right:1px solid var(--border-soft);min-width:110px}
+td:last-child{border-right:none}
+td:first-child{
+  text-align:left;padding:13px 10px 13px 16px;
+  font-size:12px;color:var(--text-light);font-weight:500;
+  letter-spacing:.04em;background:var(--bg-warm);
+  min-width:88px;white-space:nowrap;
+  border-right:1px solid var(--border)
+}
+
+.cell{display:flex;align-items:center;justify-content:center;min-height:80px;padding:10px 8px}
+
+/* cell types */
+.booked{background:#FDF8EF}
+.booked .tag{background:var(--gold-pale);color:#7A5A20;border:1px solid #E8D0A0}
+.cram{background:#EEF4F9}
+.cram .tag{background:var(--blue-pale);color:#3D607A;border:1px solid #B8D0E4}
+.free{background:var(--green-pale)}
+.free .tag{background:transparent;border:1.5px dashed #A8CEB0;color:var(--green)}
+.empty{background:var(--bg-card)}
+
+.tag{
+  display:inline-block;
+  font-size:12px;font-weight:500;
+  padding:5px 10px;border-radius:7px;
+  line-height:1.5;text-align:center;
+  max-width:100%;white-space:pre-line;word-break:keep-all
+}
+
+.section-label td{
+  background:var(--bg-warm);
+  padding:5px 16px;
+  font-size:11px;font-weight:500;
+  letter-spacing:.1em;color:var(--text-light);
+  border-bottom:1px solid var(--border-soft)
+}
+
+.weekend-head th{
+  background:#F0EBE3;color:var(--text-mid);
+  border-top:2px solid var(--border)
+}
+
+.note-row td{
+  background:var(--bg-warm);
+  padding:9px 16px;font-size:12px;color:var(--text-light);
+  text-align:left;border-top:1px solid var(--border-soft);
+  letter-spacing:.02em
+}
+
+/* INCOME */
+.income-box{
+  background:var(--bg-card);border:1px solid var(--border-soft);
+  border-radius:14px;padding:22px 24px;margin-bottom:20px
+}
+.box-title{
+  font-family:'Fraunces',serif;font-size:1rem;font-weight:600;
+  color:var(--coffee);margin-bottom:16px;display:flex;align-items:center;gap:8px
+}
+.income-table{width:100%;border-collapse:collapse;font-size:13px}
+.income-table th{
+  background:var(--bg-warm);padding:8px 12px;text-align:left;
+  font-weight:500;color:var(--text-mid);font-size:12px;
+  letter-spacing:.05em;border-bottom:1px solid var(--border)
+}
+.income-table th:not(:last-child){border-right:1px solid var(--border-soft)}
+.income-table td{
+  padding:9px 12px;min-width:unset;
+  border-right:1px solid var(--border-soft);
+  border-bottom:1px solid var(--border-soft);
+  text-align:left;color:var(--text)
+}
+.income-table td:last-child{border-right:none;text-align:right}
+.income-table td:nth-child(3),.income-table td:nth-child(4){text-align:right}
+.income-table tr:last-child td{border-bottom:none}
+.total-row td{
+  background:var(--gold-pale);color:var(--coffee);
+  font-weight:600;border-top:2px solid var(--gold) !important;font-size:14px
+}
+.note-income{margin-top:10px;font-size:12px;color:var(--text-light);line-height:1.7}
+
+/* SLOTS */
+.slots-box{background:var(--bg-card);border:1px solid var(--border-soft);border-radius:14px;padding:22px 24px;margin-bottom:20px}
+.slots-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:10px;margin-top:14px}
+.slot-card{background:var(--green-pale);border:1.5px dashed #A8CEB0;border-radius:10px;padding:11px 14px}
+.slot-day{font-size:12px;font-weight:500;color:var(--green);margin-bottom:4px;letter-spacing:.05em}
+.slot-times{font-size:12px;color:var(--text-mid);line-height:1.7}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border-soft);padding:24px;text-align:center;margin-top:10px}
+.footer-quote{font-family:'Italianno',cursive;font-size:1.2rem;color:var(--gold);margin-bottom:8px}
+.footer-links{display:flex;justify-content:center;gap:18px}
+.footer-links a{font-size:13px;color:var(--text-light);text-decoration:none;transition:color .2s}
+.footer-links a:hover{color:var(--coffee)}
+
+@media(max-width:640px){.topnav{padding:0 16px}}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="nav-brand"><span>✦</span>RAY 的升級手札</div>
+  <a class="nav-back" href="index.html">← 回首頁</a>
+</nav>
+
+<div class="hero">
+  <svg class="hero-deco" viewBox="0 0 900 140" xmlns="http://www.w3.org/2000/svg">
+    <g transform="translate(75,55)" stroke="#C8A96A" stroke-width="1" fill="none">
+      <circle cx="0" cy="0" r="5" fill="#F0E4C8"/>
+      <ellipse cx="0" cy="-10" rx="4" ry="7" transform="rotate(0)"/>
+      <ellipse cx="0" cy="-10" rx="4" ry="7" transform="rotate(72)"/>
+      <ellipse cx="0" cy="-10" rx="4" ry="7" transform="rotate(144)"/>
+      <ellipse cx="0" cy="-10" rx="4" ry="7" transform="rotate(216)"/>
+      <ellipse cx="0" cy="-10" rx="4" ry="7" transform="rotate(288)"/>
+    </g>
+    <g transform="translate(825,45)" stroke="#D4897A" stroke-width="1" fill="none">
+      <circle cx="0" cy="0" r="4" fill="#FAE8E4"/>
+      <ellipse cx="0" cy="-9" rx="3" ry="6" transform="rotate(0)"/>
+      <ellipse cx="0" cy="-9" rx="3" ry="6" transform="rotate(90)"/>
+      <ellipse cx="0" cy="-9" rx="3" ry="6" transform="rotate(180)"/>
+      <ellipse cx="0" cy="-9" rx="3" ry="6" transform="rotate(270)"/>
+    </g>
+    <text x="155" y="35" font-size="12" fill="#C8A96A">✦</text>
+    <text x="740" y="85" font-size="9" fill="#D4897A">✦</text>
+    <text x="450" y="25" font-size="7" fill="#7A9B84">✦</text>
+    <line x1="40" y1="135" x2="860" y2="135" stroke="#E8DDD0" stroke-width="1" stroke-dasharray="3,5"/>
+  </svg>
+  <h1 class="hero-title">暑假課表<br/><em>Summer Schedule</em></h1>
+  <p class="hero-sub">空白格為可排課時段</p>
+  <div class="hero-divider"></div>
+</div>
+
+<div class="container">
+
+<div class="legend">
+  <div class="legend-item"><div class="ldot ldot-booked"></div>家教／私學生</div>
+  <div class="legend-item"><div class="ldot ldot-cram"></div>補習班</div>
+  <div class="legend-item"><div class="ldot ldot-free"></div>可排課空檔</div>
+</div>
+
+<!-- Weekday Table -->
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr>
+      <th>時段</th>
+      <th>一 MON</th><th>二 TUE</th><th>三 WED</th><th>四 THU</th><th>五 FRI</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="section-label"><td colspan="6">☀ 早上</td></tr>
+    <tr>
+      <td>09:00–12:00</td>
+      <td class="free"><div class="cell"><span class="tag">空檔</span></div></td>
+      <td class="free"><div class="cell"><span class="tag">空檔</span></div></td>
+      <td class="free"><div class="cell"><span class="tag">空檔</span></div></td>
+      <td class="free"><div class="cell"><span class="tag">空檔</span></div></td>
+      <td class="free"><div class="cell"><span class="tag">空檔</span></div></td>
+    </tr>
+    <tr class="section-label"><td colspan="6">🌤 下午</td></tr>
+    <tr>
+      <td>13:00–15:00</td>
+      <td class="booked"><div class="cell"><span class="tag">樹林&#10;13:00–15:00</span></div></td>
+      <td class="free"><div class="cell"><span class="tag">空檔</span></div></td>
+      <td class="free"><div class="cell"><span class="tag">空檔</span></div></td>
+      <td class="booked"><div class="cell"><span class="tag">樹林&#10;13:00–15:00</span></div></td>
+      <td class="free"><div class="cell"><span class="tag">空檔</span></div></td>
+    </tr>
+    <tr>
+      <td>15:00–16:15</td>
+      <td class="free"><div class="cell"><span class="tag">空檔</span></div></td>
+      <td class="free"><div class="cell"><span class="tag">空檔</span></div></td>
+      <td class="free"><div class="cell"><span class="tag">空檔</span></div></td>
+      <td class="free"><div class="cell"><span class="tag">空檔</span></div></td>
+      <td class="free"><div class="cell"><span class="tag">空檔</span></div></td>
+    </tr>
+    <tr>
+      <td>16:15–18:00</td>
+      <td class="free"><div class="cell"><span class="tag">空檔</span></div></td>
+      <td class="cram"><div class="cell"><span class="tag">補習班&#10;16:15–18:00</span></div></td>
+      <td class="free"><div class="cell"><span class="tag">空檔</span></div></td>
+      <td class="free"><div class="cell"><span class="tag">空檔</span></div></td>
+      <td class="cram"><div class="cell"><span class="tag">補習班&#10;16:15–18:00</span></div></td>
+    </tr>
+    <tr class="section-label"><td colspan="6">🌙 晚上</td></tr>
+    <tr>
+      <td>18:00–19:00</td>
+      <td class="free"><div class="cell"><span class="tag">空檔</span></div></td>
+      <td class="free"><div class="cell"><span class="tag">空檔</span></div></td>
+      <td class="free"><div class="cell"><span class="tag">空檔</span></div></td>
+      <td class="free"><div class="cell"><span class="tag">空檔</span></div></td>
+      <td class="free"><div class="cell"><span class="tag">空檔</span></div></td>
+    </tr>
+    <tr>
+      <td>19:00–22:00</td>
+      <td class="booked"><div class="cell"><span class="tag">鶯歌家教&#10;19:00–22:00</span></div></td>
+      <td class="booked"><div class="cell"><span class="tag">汐止延平&#10;19:00–20:30</span></div></td>
+      <td class="booked"><div class="cell"><span class="tag">汐止兄弟&#10;19:00–21:00</span></div></td>
+      <td class="booked"><div class="cell"><span class="tag">鶯歌家教&#10;19:00–22:00</span></div></td>
+      <td class="free"><div class="cell"><span class="tag">空檔</span></div></td>
+    </tr>
+    <tr class="note-row">
+      <td colspan="6">※ 週一、四 18:00–19:00 為緩衝時間（通勤/備課），建議不排課。週二汐止延平 19:00–20:30，週三汐止兄弟 19:00–21:00。</td>
+    </tr>
+  </tbody>
+  <thead class="weekend-head">
+    <tr>
+      <th>時段</th>
+      <th colspan="2">六 SAT</th>
+      <th colspan="2">日 SUN</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="section-label"><td colspan="6">☀ 早上</td></tr>
+    <tr>
+      <td>09:00–12:00</td>
+      <td class="booked" colspan="2"><div class="cell"><span class="tag">鶯歌高中&#10;10:00–12:00</span></div></td>
+      <td class="booked" colspan="2"><div class="cell"><span class="tag">宜蘭（線上）&#10;09:00–12:00</span></div></td>
+      <td class="empty"><div class="cell"></div></td>
+    </tr>
+    <tr class="section-label"><td colspan="6">🌤 下午</td></tr>
+    <tr>
+      <td>12:00–15:30</td>
+      <td class="free" colspan="2"><div class="cell"><span class="tag">空檔</span></div></td>
+      <td class="free" colspan="2"><div class="cell"><span class="tag">空檔</span></div></td>
+      <td class="empty"><div class="cell"></div></td>
+    </tr>
+    <tr>
+      <td>15:30–18:00</td>
+      <td class="booked" colspan="2"><div class="cell"><span class="tag">亞東國中&#10;15:30–17:30</span></div></td>
+      <td class="booked" colspan="2"><div class="cell"><span class="tag">大同高中&#10;16:00–18:00</span></div></td>
+      <td class="empty"><div class="cell"></div></td>
+    </tr>
+    <tr class="section-label"><td colspan="6">🌙 晚上</td></tr>
+    <tr>
+      <td>18:00–22:00</td>
+      <td class="free" colspan="2"><div class="cell"><span class="tag">空檔</span></div></td>
+      <td class="free" colspan="2"><div class="cell"><span class="tag">空檔</span></div></td>
+      <td class="empty"><div class="cell"></div></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<!-- Income -->
+<div class="income-box">
+  <div class="box-title">💰 每月預估收入（以 4 週計）</div>
+  <table class="income-table">
+    <thead>
+      <tr><th>學生／課程</th><th>時段</th><th>每堂</th><th>每週次</th><th>每月小計</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>樹林</td><td>一、四 13:00–15:00</td><td>$1,600</td><td>2</td><td>$12,800</td></tr>
+      <tr><td>鶯歌家教</td><td>一、四 19:00–22:00</td><td>$1,700</td><td>2</td><td>$13,600</td></tr>
+      <tr><td>補習班</td><td>二、五 16:15–18:00</td><td>$900</td><td>2</td><td>$7,200</td></tr>
+      <tr><td>汐止延平</td><td>二 晚上</td><td>$900</td><td>1</td><td>$3,600</td></tr>
+      <tr><td>汐止兄弟</td><td>三 晚上</td><td>$1,500</td><td>1</td><td>$6,000</td></tr>
+      <tr><td>鶯歌高中</td><td>六 10:00–12:00</td><td>$1,600</td><td>1</td><td>$6,400</td></tr>
+      <tr><td>亞東國中</td><td>六 15:30–17:30</td><td>$1,200</td><td>1</td><td>$4,800</td></tr>
+      <tr><td>宜蘭線上</td><td>日 09:00–12:00</td><td>$2,400</td><td>1</td><td>$9,600</td></tr>
+      <tr><td>大同高中</td><td>日 16:00–18:00</td><td>$1,600</td><td>1</td><td>$6,400</td></tr>
+      <tr class="total-row"><td colspan="4">月收入合計</td><td>$70,400</td></tr>
+    </tbody>
+  </table>
+  <p class="note-income">※ 以上以每學生每週 1 堂、每月 4 週計算。鶯歌家教 19:00–22:00 固定一次 $1,700。<br>※ 汐止延平 19:00–20:30、汐止兄弟 19:00–21:00，各每週 1 堂。</p>
+</div>
+
+<!-- Slots -->
+<div class="slots-box">
+  <div class="box-title">✦ 剩餘可排課空檔</div>
+  <div class="slots-grid">
+    <div class="slot-card"><div class="slot-day">一 MON</div><div class="slot-times">早上 09:00–13:00<br>下午 15:00–18:30</div></div>
+    <div class="slot-card"><div class="slot-day">二 TUE</div><div class="slot-times">早上 09:00–16:15<br>下午 18:00–19:00</div></div>
+    <div class="slot-card"><div class="slot-day">三 WED</div><div class="slot-times">早上 09:00 起（最彈性）<br>下午全天<br>18:00–19:00</div></div>
+    <div class="slot-card"><div class="slot-day">四 THU</div><div class="slot-times">早上 09:00–13:00<br>下午 15:00–18:30</div></div>
+    <div class="slot-card"><div class="slot-day">五 FRI</div><div class="slot-times">早上 09:00–16:15<br>晚上 18:00 以後</div></div>
+    <div class="slot-card"><div class="slot-day">六 SAT</div><div class="slot-times">下午 12:00–15:30<br>晚上 17:30 以後</div></div>
+    <div class="slot-card"><div class="slot-day">日 SUN</div><div class="slot-times">下午 12:00–16:00<br>晚上 18:00 以後</div></div>
+  </div>
+</div>
+
+</div>
+
+<footer>
+  <div class="footer-quote">"每一天都是一個新的版本。"</div>
+  <div class="footer-links">
+    <a href="index.html">← 回首頁</a>
+    <a href="https://www.instagram.com/biglazyseals" target="_blank">@biglazyseals</a>
+  </div>
+</footer>
+
+</body>
+</html>
