@@ -23,8 +23,8 @@
   --gold-pale:#F0E4C8;
   --red:#C85A5A;
 }
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:'Zen Kaku Gothic New',sans-serif;font-size:15px;line-height:1.8;min-height:100vh}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{background:var(--bg);color:var(--text);font-family:'Zen Kaku Gothic New',sans-serif;font-size:15px;line-height:1.8;min-height:100vh;overflow-x:hidden}
 
 /* ── NAV ── */
 .topnav{background:var(--bg-card);border-bottom:1px solid var(--border-soft);padding:0 32px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
@@ -193,12 +193,32 @@ footer{border-top:1px solid var(--border-soft);padding:28px 24px;text-align:cent
 .footer-links a:hover{color:var(--coffee)}
 
 @media(max-width:640px){
+  /* nav */
   .topnav{padding:0 16px;flex-wrap:wrap;height:auto;min-height:58px}
   .nav-toggle{display:flex}
   .nav-links{display:none;flex-direction:column;width:100%;gap:0;padding:8px 0 12px;border-top:1px solid var(--border-soft)}
   .nav-links.open{display:flex}
   .nav-links a{display:block;padding:10px 4px}
+  /* layout */
+  .container{padding:0 14px 48px}
+  .hero{padding:32px 14px 28px}
+  .card{padding:16px 14px}
+  /* grids */
   .w-grid{grid-template-columns:repeat(2,1fr)}
+  .sleep-row{grid-template-columns:1fr 1fr;row-gap:12px}
+  .sleep-row>div:last-child{grid-column:1/-1}
+  /* week strip — keep 7 cols but tighten */
+  .wd{padding:5px 1px}
+  .wd-lbl{font-size:9px}
+  .wd-val{font-size:11px}
+  /* misc */
+  .mood-row{gap:5px}
+  .mood-btn{padding:5px 10px;font-size:12px}
+}
+@media(max-width:400px){
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .sleep-row{grid-template-columns:1fr}
+  .sleep-row>div:last-child{grid-column:auto}
 }
 .nav-toggle{display:none;background:none;border:none;cursor:pointer;font-size:22px;color:var(--coffee);padding:6px;line-height:1}
 </style>
