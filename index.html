@@ -668,10 +668,33 @@
 
     .footer-links a:hover { color: var(--coffee); }
 
+    /* ─── HAMBURGER BUTTON ─── */
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px;
+      color: var(--text-light);
+      font-size: 22px;
+      line-height: 1;
+    }
+
     /* ─── RESPONSIVE ─── */
     @media (max-width: 768px) {
-      .topnav { padding: 0 20px; }
-      .topnav-links { display: none; }
+      .topnav { padding: 0 20px; flex-wrap: wrap; height: auto; min-height: 56px; align-items: center; }
+      .nav-toggle { display: flex; align-items: center; }
+      .topnav-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        gap: 0;
+        padding: 8px 0 14px;
+        border-top: 1px solid var(--border-soft);
+      }
+      .topnav-links.open { display: flex; }
+      .topnav-links li { padding: 0; }
+      .topnav-links a { display: block; padding: 10px 4px; font-size: 14px; }
       .hero { padding: 40px 20px 36px; }
       .hero h1 { font-size: 36px; }
       .content-wrap { padding: 36px 20px; }
@@ -691,7 +714,8 @@
     <span class="brand-text">RAY 的<em>升級手札</em></span>
     <span class="brand-sub">growth journal</span>
   </div>
-  <ul class="topnav-links">
+  <button class="nav-toggle" id="navToggle" aria-label="開啟選單">☰</button>
+  <ul class="topnav-links" id="topnavLinks">
     <li><a href="#projects">學習計畫</a></li>
     <li><a href="#log">學習日誌</a></li>
     <li><a href="#roadmap">未來規劃</a></li>
@@ -700,6 +724,19 @@
     <li><a href="https://github.com/yankee40505" target="_blank">GitHub ↗</a></li>
   </ul>
 </header>
+<script>
+  document.getElementById('navToggle').addEventListener('click', function() {
+    var links = document.getElementById('topnavLinks');
+    links.classList.toggle('open');
+    this.textContent = links.classList.contains('open') ? '✕' : '☰';
+  });
+  document.querySelectorAll('.topnav-links a').forEach(function(a) {
+    a.addEventListener('click', function() {
+      document.getElementById('topnavLinks').classList.remove('open');
+      document.getElementById('navToggle').textContent = '☰';
+    });
+  });
+</script>
 
 <!-- HERO -->
 <section class="hero">
