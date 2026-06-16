@@ -193,10 +193,14 @@ footer{border-top:1px solid var(--border-soft);padding:28px 24px;text-align:cent
 .footer-links a:hover{color:var(--coffee)}
 
 @media(max-width:640px){
-  .topnav{padding:0 16px}
-  .nav-links{display:none}
+  .topnav{padding:0 16px;flex-wrap:wrap;height:auto;min-height:58px}
+  .nav-toggle{display:flex}
+  .nav-links{display:none;flex-direction:column;width:100%;gap:0;padding:8px 0 12px;border-top:1px solid var(--border-soft)}
+  .nav-links.open{display:flex}
+  .nav-links a{display:block;padding:10px 4px}
   .w-grid{grid-template-columns:repeat(2,1fr)}
 }
+.nav-toggle{display:none;background:none;border:none;cursor:pointer;font-size:22px;color:var(--coffee);padding:6px;line-height:1}
 </style>
 </head>
 <body>
@@ -204,12 +208,26 @@ footer{border-top:1px solid var(--border-soft);padding:28px 24px;text-align:cent
 <!-- NAV -->
 <nav class="topnav">
   <div class="nav-brand"><span>✦</span>RAY 的升級手札</div>
-  <div class="nav-links">
+  <button class="nav-toggle" id="navToggle" aria-label="開啟選單">☰</button>
+  <div class="nav-links" id="navLinks">
     <a href="index.html">手札</a>
     <a href="tracker.html" class="active">身體追蹤</a>
     <a href="schedule.html">課表</a>
   </div>
 </nav>
+<script>
+  document.getElementById('navToggle').addEventListener('click',function(){
+    var l=document.getElementById('navLinks');
+    l.classList.toggle('open');
+    this.textContent=l.classList.contains('open')?'✕':'☰';
+  });
+  document.querySelectorAll('.nav-links a').forEach(function(a){
+    a.addEventListener('click',function(){
+      document.getElementById('navLinks').classList.remove('open');
+      document.getElementById('navToggle').textContent='☰';
+    });
+  });
+</script>
 
 <!-- HERO -->
 <div class="hero">
