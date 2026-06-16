@@ -180,10 +180,10 @@ body{background:var(--bg);color:var(--text);font-family:'Zen Kaku Gothic New',sa
 .journal-save{margin-top:8px;padding:8px 18px;background:none;border:1px solid var(--border);border-radius:8px;font-size:13px;color:var(--text-mid);cursor:pointer;font-family:inherit;transition:all .18s}
 .journal-save:hover{border-color:var(--gold);color:var(--coffee)}
 
-.log-list{margin-top:16px;display:flex;flex-direction:column;gap:10px;max-height:260px;overflow-y:auto}
+.log-list{margin-top:16px;display:flex;flex-direction:column;gap:10px;max-height:400px;overflow-y:auto}
 .log-item{padding:11px 14px;background:var(--bg-warm);border-radius:10px;border-left:3px solid var(--gold)}
 .log-date{font-size:11px;color:var(--text-light);margin-bottom:4px}
-.log-text{font-size:13px;color:var(--text);line-height:1.7}
+.log-text{font-size:13px;color:var(--text);line-height:1.7;white-space:pre-wrap;word-break:break-word}
 
 /* ── FOOTER ── */
 footer{border-top:1px solid var(--border-soft);padding:28px 24px;text-align:center}
@@ -640,19 +640,21 @@ function setPri(id,v){const r=reads.find(x=>x.id===id);if(r){r.pri=v;renderReads
 // ── JOURNAL
 function saveJournal(){
   const txt=document.getElementById('j-inp').value.trim();if(!txt)return;
-  const today=dateKey(new Date());
-  const idx=journals.findIndex(j=>j.date===today);
-  if(idx>=0)journals[idx].text=txt;
-  else journals.unshift({date:today,text:txt});
+  const now=new Date();
+  const time=now.toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'});
+  journals.unshift({id:uid(),date:dateKey(now),time:time,text:txt});
   document.getElementById('j-inp').value='';
   renderJournals();save();
   const t=document.getElementById('toast');t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000);
 }
 function renderJournals(){
   const c=document.getElementById('log-list');c.innerHTML='';
-  journals.slice(0,20).forEach(j=>{
+  journals.slice(0,30).forEach(j=>{
     const div=document.createElement('div');div.className='log-item';
-    div.innerHTML=`<div class="log-date">${j.date}</div><div class="log-text">${esc(j.text)}</div>`;
+    const timeStr=j.time?' · '+j.time:'';
+    const dateDiv=document.createElement('div');dateDiv.className='log-date';dateDiv.textContent=j.date+timeStr;
+    const textDiv=document.createElement('div');textDiv.className='log-text';textDiv.textContent=j.text;
+    div.appendChild(dateDiv);div.appendChild(textDiv);
     c.appendChild(div);
   });
 }
